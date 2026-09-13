@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
 from sklearn.datasets import load_breast_cancer
+from sklearn.metrics import accuracy_score
 from sklearn.model_selection import train_test_split
 
 #加载数据
@@ -24,3 +25,19 @@ models = {
     "Decision Tree":DecisionTreeClassifier(max_depth=5,random_state=42),
     "KNN":make_pipeline(StandardScaler(),KNeighborsClassifier(n_neighbors=5))
 }
+
+cv = StratifiedKFold(n_splits=10,shuffle=True,random_state=42)
+result = {}
+for name,model in models.items():
+    acc_scores = cross_val_score(model,X_train,y_train,cv=cv,scoring='accuracy')
+    auc_scores = cross_val_score(model,X_train,y_train,cv=cv,scoring='roc_auc')
+    result[name] = {
+        "Accurary Mean": acc_scores.mean(),
+        "Accurary Std": acc_scores.std(),
+        "Auc Mean": auc_scores.mean(),
+        "Auc Std": auc_scores.std()
+    }
+
+#转换为DataFrame查看结果
+result_df = pd.DataFrame(result).T
+print(result_df)
