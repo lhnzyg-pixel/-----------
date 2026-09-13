@@ -41,3 +41,16 @@ for name,model in models.items():
 #转换为DataFrame查看结果
 result_df = pd.DataFrame(result).T
 print(result_df)
+
+from sklearn.metrics import confusion_matrix,precision_score,recall_score,f1_score
+
+best_model = models["Logistic Regrssion"]
+best_model.fit(X_train,y_train)
+y_pred = best_model.predict(X_test)
+
+print("混淆矩阵:\n", confusion_matrix(y_test, y_pred))
+print(f"精度 (Accuracy): {accuracy_score(y_test, y_pred):.4f}")
+print(f"查准率 (Precision): {precision_score(y_test, y_pred):.4f}")
+print(f"查全率 (Recall): {recall_score(y_test, y_pred):.4f}")
+print(f"F1值 (F1 Score): {f1_score(y_test, y_pred):.4f}")
+
